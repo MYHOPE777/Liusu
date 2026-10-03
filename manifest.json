@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "千川流速",
+  "version": "1.0.1",
+  "description": "在主播实时大屏中统计新进入直播间的人流速。",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://compass.jinritemai.com/screen/anchor/talent*"
+      ],
+      "js": [
+        "src/detector-core.js",
+        "src/dom-detector.js",
+        "src/storage.js",
+        "src/panel.js",
+        "src/content.js"
+      ],
+      "css": [
+        "src/styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/icons/*.svg"
+      ],
+      "matches": [
+        "https://compass.jinritemai.com/screen/anchor/talent*"
+      ]
+    }
+  ]
+}

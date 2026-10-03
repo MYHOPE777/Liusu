@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>千川流速 · 模拟公屏</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <main class="demo-shell">
+    <header class="topbar"><div><span class="eyebrow">千川流速 / OFFLINE LAB</span><h1>实时公屏模拟器</h1></div><span class="badge">仅本地模拟</span></header>
+    <section class="workspace">
+      <section class="screen-card">
+        <div class="screen-head"><div><h2>主播实时大屏</h2><p>用下方控制生成“XXX来了”，观察扩展统计窗口内的人流速。</p></div><span class="live-dot">模拟中</span></div>
+        <section class="public-screen"><h3>实时公屏</h3><div class="message-list" role="log" aria-live="polite"></div></section>
+      </section>
+      <aside class="control-card" aria-label="模拟控制">
+        <h2>生成进入事件</h2>
+        <label for="name">观众昵称</label><input id="name" value="小明" maxlength="30" autocomplete="off">
+        <button id="enter" class="primary">添加“来了”</button>
+        <div class="quick"><button data-name="小红">小红</button><button data-name="老王">老王</button><button data-name="路人甲">路人甲</button></div>
+        <div class="divider"></div><button id="burst">连续进入 5 人</button><button id="scroll">模拟列表滚动</button><button id="clear">清空可见公屏</button>
+        <p class="note">首次加载的历史消息只建立基线，不会计入本场。相同昵称再次进入会累加进入事件，但去重人数只计一次。</p>
+      </aside>
+    </section>
+  </main>
+  <script src="../src/detector-core.js"></script>
+  <script src="../src/dom-detector.js"></script>
+  <script src="../src/panel.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>

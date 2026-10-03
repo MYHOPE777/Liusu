@@ -1,0 +1,28 @@
+{
+  "id": "session-example-001",
+  "roomId": "demo-room",
+  "mode": "simulation",
+  "pageUrl": "file:///Users/tangsir/千川流速/demo/demo.html",
+  "tabId": null,
+  "tabInstanceId": "demo-tab",
+  "startedAt": 1700000000000,
+  "endedAt": 1700000060000,
+  "updatedAt": 1700000060000,
+  "eventCount": 2,
+  "events": [
+    {
+      "id": "event-example-001",
+      "timestamp": 1700000010000,
+      "username": "示例用户A",
+      "tabInstanceId": "demo-tab",
+      "roomId": "demo-room"
+    },
+    {
+      "id": "event-example-002",
+      "timestamp": 1700000025000,
+      "username": "示例用户B",
+      "tabInstanceId": "demo-tab",
+      "roomId": "demo-room"
+    }
+  ]
+}

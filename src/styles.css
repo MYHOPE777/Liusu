@@ -1,0 +1,2 @@
+/* The panel is rendered inside a closed ShadowRoot. This stylesheet only marks its host. */
+[data-qianchuan-flow-root] { all: initial; }

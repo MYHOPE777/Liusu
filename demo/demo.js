@@ -1,0 +1,17 @@
+(function () {
+  'use strict';
+  window.QIANCHUAN_ASSET_BASE = '../assets/icons/';
+  const core = window.QianchuanCore; const dom = window.QianchuanDOM; const { Panel } = window.QianchuanPanel;
+  const roomId = 'demo-room'; const counter = new core.FlowCounter({ startedAt: Date.now(), tabInstanceId: 'demo-tab', roomId }); let paused = false; let config = { windowSeconds: 60, unitSeconds: 60 }; let detector = new core.SequenceDetector(); let panel; let screen; let stop; let trend = [];
+  const list = document.querySelector('.message-list'); const input = document.querySelector('#name');
+  function addRow(name) { const row = document.createElement('div'); row.dataset.liveMessage = ''; row.textContent = `${name}来了`; list.append(row); list.scrollTop = list.scrollHeight; }
+  function update(status = paused ? '已暂停' : '模拟检测中') { const now = Date.now(); const stats = counter.stats(now, config.windowSeconds, config.unitSeconds); const rateComparison = counter.comparePreviousMinute(now, config.unitSeconds); const activity = counter.activity(now); panel.update({ status, paused, stats, rateComparison, activity, elapsedSeconds: stats.elapsedSeconds, ...config, trend }); }
+  function attach() { screen = dom.findPublicScreen(document); detector.baseline(dom.readRows(screen)); stop = dom.observeScreen(screen, (rows, info) => { if (!paused) { const names = detector.scan(rows, info); counter.add(names, Date.now()); } else detector.baseline(rows); update(); }); update(); }
+  function add(name) { addRow(name || '匿名观众'); }
+  panel = new Panel({ onPause: () => { paused = !paused; if (paused) counter.pause(Date.now()); else { counter.resume(Date.now()); detector.baseline(dom.readRows(screen)); } update(); }, onReset: () => { counter.reset(Date.now()); detector = new core.SequenceDetector(); detector.baseline(dom.readRows(screen)); trend = []; update('模拟检测中'); }, onConfig: (patch) => { config = { ...config, ...patch }; update(); }, onExport: (kind) => { const content = kind === 'csv' ? core.exportCsv(counter.events) : core.exportJson({ mode: 'simulation', roomId, startedAt: counter.startedAt }, counter.events); const blob = new Blob([content], { type: kind === 'csv' ? 'text/csv' : 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `qianchuan-flow-demo.${kind}`; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 500); }, onCollapse: () => {} });
+  panel.root.host.style.right = 'calc(50% + 20px)';
+  document.querySelector('#enter').addEventListener('click', () => add(input.value.trim())); input.addEventListener('keydown', (event) => { if (event.key === 'Enter') add(input.value.trim()); }); document.querySelectorAll('[data-name]').forEach((button) => button.addEventListener('click', () => add(button.dataset.name)));
+  document.querySelector('#burst').addEventListener('click', () => ['小李', '阿杰', '小周', '阿敏', '东东'].forEach((name, index) => setTimeout(() => add(name), index * 180)));
+  document.querySelector('#scroll').addEventListener('click', () => { while (list.children.length > 5) list.firstElementChild.remove(); }); document.querySelector('#clear').addEventListener('click', () => list.replaceChildren());
+  attach(); setInterval(() => { const stats = counter.stats(Date.now(), config.windowSeconds, config.unitSeconds); trend.push(stats.events); if (trend.length > 30) trend.shift(); update(); }, 1000);
+})();
