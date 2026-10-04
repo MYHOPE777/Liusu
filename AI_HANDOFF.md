@@ -14,7 +14,7 @@
 - 当前分支：`main`。
 - 远程仓库目标：`https://github.com/MYHOPE777/Liusu.git`，远程名约定为 `origin`。
 - 当前仓库在本地还没有首个提交时，先将全部源代码、文档、测试和模拟数据作为首个版本提交。
-- 真实直播 DOM 尚未在开播状态下验证；DOM 变化时优先修改 `src/dom-detector.js`，不要绕过 DOM 去调用接口。
+- 已使用已登录的主播大屏页面验证真实结构：标题控制器为 `commentsManager`，消息面板常见 `commentsWrap--...` / `chatMessages--...` CSS Module 类名，单条消息常见 `levelMessage--...`。`src/dom-detector.js` 已跳过标题控制器并识别这些消息行；DOM 变化时继续优先修改该文件，不要绕过 DOM 去调用接口。
 - 直播刷新恢复已实现：当前房间的活动 session id 放在 `sessionStorage`，事件从 IndexedDB 读回；离线 demo 使用 `localStorage` 保留模拟事件和公屏。`FlowCounter.load()` 会过滤无效持久化记录。
 
 ## 接手后的第一步

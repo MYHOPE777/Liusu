@@ -24,6 +24,33 @@ test('reads visible rows in DOM order and keeps node keys stable', () => {
   assert.equal(domDetector.readRows(screen)[0].key, first[0].key);
 });
 
+test('detects the rendered anchor-screen message nodes inside CSS module wrappers', async () => {
+  const dom = page('<section class="commentsWrap--ljY6Z"><div class="title--OziRk" id="commentsManager"><span>实时公屏</span><button>公屏管理</button></div><div class="chatMessages--X32PK"><div class="messgesAreas--ABrPg"><div class="normalAreas--leCzh"><div class="levelMessage--a2gWz"><span class="nickname--Z10ja">XXX</span><span class="content--ryzTq">来了</span></div></div></div></div></section>');
+  const screen = domDetector.findPublicScreen(dom.window.document);
+  assert.equal(screen.className, 'commentsWrap--ljY6Z');
+  assert.deepEqual(domDetector.readRows(screen).map((row) => row.text), ['XXX来了']);
+  assert.equal(domDetector.readRows(screen).length, 1);
+
+  const snapshots = [];
+  const cleanup = domDetector.observeScreen(screen, (rows, evidence) => snapshots.push({ rows, evidence }));
+  const messageArea = screen.querySelector('.normalAreas--leCzh');
+  const appended = dom.window.document.createElement('div');
+  appended.className = 'levelMessage--a2gWz';
+  appended.innerHTML = '<span class="nickname--Z10ja">YYY</span><span class="content--ryzTq">来了</span>';
+  messageArea.appendChild(appended);
+  await new Promise((resolve) => dom.window.queueMicrotask(resolve));
+  const added = snapshots.at(-1);
+  assert.deepEqual(added.rows.map((row) => row.text), ['XXX来了', 'YYY来了']);
+  assert.equal(added.evidence.freshKeys.has(added.rows[1].key), true);
+
+  const firstMessage = messageArea.children[0];
+  firstMessage.querySelector('.nickname--Z10ja').textContent = 'ZZZ';
+  await new Promise((resolve) => dom.window.queueMicrotask(resolve));
+  const changed = snapshots.at(-1);
+  assert.equal(changed.evidence.freshKeys.has(changed.rows[0].key), true);
+  cleanup();
+});
+
 test('observes appended and changed rows while suppressing same-content redraw', async () => {
   const dom = page('<section data-public-screen><h2>实时公屏</h2><div role="log" id="log"><div data-live-message>Alice来了</div><div data-live-message>Bob来了</div></div></section>');
   const screen = dom.window.document.querySelector('[data-public-screen]');

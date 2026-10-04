@@ -56,7 +56,11 @@
   }
   function hasRowClass(element) {
     const value = `${element.id || ''} ${element.getAttribute('class') || ''}`;
-    return /(?:^|[\s_-])(?:row|message|item|entry|comment|chat-line|visitor)(?:$|[\s_-])/i.test(value);
+    // CSS Modules on the live screen use camelCase names such as
+    // `levelMessage--a2gWz`. A lowercase-to-uppercase boundary before a
+    // singular row word is a safe signal; plural containers like
+    // `chatMessages--...` and `commentsWrap--...` remain excluded.
+    return /(?:^|[\s_-]|(?<=[a-z]))(?:row|message|item|entry|comment|chat-line|visitor)(?=$|[\s_-])/i.test(value);
   }
   function isTitleElement(element) { return normalizeText(element.textContent).replace(/\s+/g, '') === TITLE; }
   function hasDescendantCandidate(element) { return Array.from(element.children || []).some((child) => hasExplicitRowMarker(child) || hasRowClass(child)); }
@@ -76,6 +80,14 @@
     const explicit = Array.from(container.querySelectorAll('[data-live-message], [data-public-message], [data-screen-row], [data-live-row], [data-entry-row], [role="listitem"]'))
       .filter((element) => !isHidden(element, container) && normalizeText(element.textContent));
     if (explicit.length) return removeNestedCandidates(explicit);
+
+    // Look for concrete CSS/class row markers before inspecting list-like
+    // wrappers. The screen's message area is nested several levels deep, and
+    // treating its wrapper as a row would collapse all usernames into one text.
+    const marked = Array.from(container.querySelectorAll('[class], [id]'))
+      .filter((element) => !isHidden(element, container) && !isTitleElement(element) && hasRowClass(element) && normalizeText(element.textContent));
+    if (marked.length) return removeNestedCandidates(marked);
+
     const logs = [container].concat(Array.from(container.querySelectorAll('[role="log"], [role="list"], ul, ol, [class*="message"], [class*="row"], [class*="list"], [class*="screen"]')));
     for (const list of logs) {
       if (!isElement(list) || isHidden(list, container)) continue;
@@ -86,9 +98,6 @@
         if (list !== container || list.getAttribute('role') === 'log' || list.getAttribute('role') === 'list') return children;
       }
     }
-    const marked = Array.from(container.querySelectorAll('[class], [id]'))
-      .filter((element) => !isHidden(element, container) && !isTitleElement(element) && hasRowClass(element) && normalizeText(element.textContent));
-    if (marked.length) return removeNestedCandidates(marked);
     return directRowChildren(container);
   }
   function rowObjects(container) { return findRows(container).map((node) => ({ key: nodeKey(node), text: normalizeText(node.textContent) })); }
@@ -118,7 +127,11 @@
         const rows = findRows(current).filter((row) => row !== title && !row.contains(title));
         const attributes = `${current.id || ''} ${current.getAttribute('class') || ''}`;
         const named = /(?:public|screen|live|chat|comment|message|panel)/i.test(attributes);
-        if (rows.length || named || current.getAttribute('role') === 'log') return current;
+        // `commentsManager` is the title/controller on the live screen, not
+        // the panel containing the message list. Continue to its parent so
+        // `commentsWrap--...` can be selected once concrete rows are present.
+        const titleController = /comments?manager/i.test(attributes);
+        if (rows.length || (named && !titleController) || current.getAttribute('role') === 'log') return current;
         current = current.parentElement;
         depth += 1;
       }

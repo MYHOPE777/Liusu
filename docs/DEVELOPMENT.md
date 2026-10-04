@@ -81,6 +81,8 @@ locate() -> sample() -> render()
 
 如果真实页面没有显式标记，会在近邻元素的 `id/class` 中寻找 `public/screen/live/chat/comment/message/panel` 等线索。不能退化到整个 `body` 或页面级 `main`，否则会把其它文本误当作公屏消息。
 
+已在已登录的主播大屏页面验证一组真实结构：标题控制器使用 `id="commentsManager"`，外层容器使用类似 `commentsWrap--...` 的 CSS Module 类名，消息列表位于 `chatMessages--...` 下，单条进入行使用类似 `levelMessage--...` 的类名。检测器会跳过 `commentsManager` 标题控制器，向外层消息面板继续查找，并把 camelCase 的单数 `message/row/entry/comment/visitor/item` 类名识别为行；`chatMessages`、`commentsWrap` 等复数包装器不会被当成一条消息。该页面仍可能因账号、登录状态或直播状态不同而返回不同结构，新增结构应先补合成 DOM 回归测试。
+
 ### 4.2 行读取与可见性
 
 `readRows(container)` 返回按 DOM 顺序排列的：
