@@ -64,8 +64,8 @@ writeJson(manifestPath, manifest);
 
 run('npm', ['test']);
 run('npm', ['run', 'check']);
-run('npm', ['run', 'test:browser']);
 run('npm', ['run', 'package']);
+run('npm', ['run', 'test:browser', '--', 'dist']);
 
 run('git', ['add', '-A']);
 run('git', ['commit', '-m', `chore(release): v${version}`]);

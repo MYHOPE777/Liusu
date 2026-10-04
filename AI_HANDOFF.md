@@ -14,6 +14,7 @@
 - 当前分支：`main`。
 - 远程仓库目标：`https://github.com/MYHOPE777/Liusu.git`，远程名约定为 `origin`。
 - 当前仓库在本地还没有首个提交时，先将全部源代码、文档、测试和模拟数据作为首个版本提交。
+- Chrome 安装时选择 `npm run package` 生成的原文件目录 `/Users/tangsir/千川流速/dist`，不需要压缩包。内容脚本仍只匹配主播路径；`web_accessible_resources` 只暴露 SVG 图标，`matches` 必须写为 `https://compass.jinritemai.com/*`。该字段不能使用 `/screen/anchor/talent*`，否则 Chrome 会拒绝加载清单。
 - 已使用已登录的主播大屏页面验证真实结构：标题控制器为 `commentsManager`，消息面板常见 `commentsWrap--...` / `chatMessages--...` CSS Module 类名，单条消息常见 `levelMessage--...`。`src/dom-detector.js` 已跳过标题控制器并识别这些消息行；DOM 变化时继续优先修改该文件，不要绕过 DOM 去调用接口。
 - 直播刷新恢复已实现：当前房间的活动 session id 放在 `sessionStorage`，事件从 IndexedDB 读回；离线 demo 使用 `localStorage` 保留模拟事件和公屏。`FlowCounter.load()` 会过滤无效持久化记录。
 
@@ -26,7 +27,10 @@ npm test
 npm run check
 npm run test:browser
 npm run package
+npm run test:browser -- dist
 ```
+
+`npm run test:browser` 会先在独立 Chrome 中加载根目录真实扩展，确认加载成功，再检查 demo。手动打包后执行 `npm run test:browser -- dist` 验证 `dist/` 真实加载，避免只通过模拟页面测试却交付了无效清单。
 
 如果需要保存当前修改并同步版本：
 
@@ -34,7 +38,7 @@ npm run package
 npm run sync
 ```
 
-`sync` 默认递增补丁版本，运行全部验证，更新三个版本文件，创建本地提交，然后尝试推送到 `origin/main`。网络或 GitHub 身份验证失败时，本地提交仍然保留；网络恢复后再次执行 `npm run sync` 会尝试推送待提交内容。次版本和主版本分别使用 `npm run sync -- minor`、`npm run sync -- major`。
+`sync` 默认递增补丁版本并更新三个版本文件，依次运行 `npm test`、`npm run check`、`npm run package`、`npm run test:browser -- dist`，自动在提交前验证待安装目录。验证通过后创建本地提交，然后尝试推送到 `origin/main`。网络或 GitHub 身份验证失败时，本地提交仍然保留；网络恢复后再次执行 `npm run sync` 会尝试推送待提交内容。次版本和主版本分别使用 `npm run sync -- minor`、`npm run sync -- major`。
 
 ## 不要破坏的约束
 
@@ -44,7 +48,7 @@ npm run sync
 4. 人流速是滚动窗口事件数除以有效窗口秒数，再乘显示单位秒数；无新事件时不使用人为衰减公式。窗口过期后速率归零。
 5. 暂停和页面隐藏期间不收集事件，统计时排除暂停时长。
 6. 真实直播事件只保存在浏览器本地 IndexedDB；不要把真实导出文件、浏览器缓存或昵称写入 Git。
-7. Chrome 权限和页面匹配范围保持最小：目前只有 `storage` 权限和千川主播大屏匹配规则。
+7. Chrome 权限和内容脚本页面匹配范围保持最小：目前只有 `storage` 权限和千川主播大屏匹配规则。图标资源的 `web_accessible_resources.matches` 按 Chrome 规则使用本站 `/*`，不能照搬内容脚本的路径。
 
 ## 修改顺序
 

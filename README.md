@@ -16,11 +16,12 @@
 
 ## 加载扩展
 
-1. 打开 Chrome `chrome://extensions`，启用“开发者模式”。
-2. 点击“加载已解压的扩展程序”，选择项目目录 `/Users/tangsir/千川流速`。
-3. 打开匹配的主播大屏地址：`https://compass.jinritemai.com/screen/anchor/talent...`。
+1. 在项目目录运行 `npm run package`，生成原文件目录 `/Users/tangsir/千川流速/dist`。
+2. 打开 Chrome `chrome://extensions`，启用“开发者模式”。
+3. 点击“加载已解压的扩展程序”，选择 `/Users/tangsir/千川流速/dist`，无需压缩包。
+4. 打开匹配的主播大屏地址：`https://compass.jinritemai.com/screen/anchor/talent...`。
 
-扩展当前只匹配该地址范围。真实直播页的 DOM 行结构如果发生变化，只需要调整 `src/dom-detector.js`，统计和本地存储接口不变。
+扩展当前只在该地址范围注入内容脚本。`web_accessible_resources` 只向 `compass.jinritemai.com` 页面暴露面板的 SVG 图标；Chrome 要求该字段的路径为 `/*`，因此使用 `https://compass.jinritemai.com/*`。内容脚本仍使用主播路径匹配。真实直播页的 DOM 行结构如果发生变化，只需要调整 `src/dom-detector.js`，统计和本地存储接口不变。
 
 ## 离线模拟
 
@@ -41,9 +42,10 @@ npm test
 npm run check
 npm run test:browser
 npm run package
+npm run test:browser -- dist
 ```
 
-`npm run package` 将可加载的扩展文件复制到 `dist/`；`demo/` 是离线验收页面，不会被复制到扩展包。
+`npm run test:browser` 先让独立 Chrome 加载项目根目录的真实扩展，确认加载成功，再测试离线 demo。`npm run package` 将扩展原文件复制到 `dist/`；手动打包后执行 `npm run test:browser -- dist` 验证生成目录也能加载。`demo/` 是离线验收页面，不会被复制到扩展目录。
 
 ## 版本与仓库同步
 
@@ -53,4 +55,4 @@ npm run package
 npm run sync
 ```
 
-该命令会递增补丁版本号，同时更新 `package.json`、`package-lock.json` 和扩展 `manifest.json`，运行验证、创建本地 Git 提交，并尝试推送到 `origin/main`。网络暂不可用时会保留本地提交；网络恢复后再次执行即可集中推送。需要发布次版本或主版本时可使用 `npm run sync -- minor` 或 `npm run sync -- major`。
+该命令会递增补丁版本号，同时更新 `package.json`、`package-lock.json` 和扩展 `manifest.json`，运行测试和清单检查、重新生成 `dist/`，并在提交前自动验证 `dist/` 真实加载和离线 demo。验证通过后创建本地 Git 提交，并尝试推送到 `origin/main`。网络暂不可用时会保留本地提交；网络恢复后再次执行即可集中推送。需要发布次版本或主版本时可使用 `npm run sync -- minor` 或 `npm run sync -- major`。

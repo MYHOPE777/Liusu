@@ -10,6 +10,8 @@
 https://compass.jinritemai.com/screen/anchor/talent...
 ```
 
+`web_accessible_resources` 仅暴露面板使用的 `assets/icons/*.svg`，其 `matches` 为 `https://compass.jinritemai.com/*`。Chrome 对该字段只按来源匹配，并要求路径必须是 `/*`；写成 `/screen/anchor/talent*` 会报 `Invalid match pattern` 并拒绝整个清单。内容脚本的主播路径匹配仍然保留。
+
 离线页面 `demo/demo.html` 只模拟 DOM，不访问扩展 API，方便直播未开播时测试检测、统计、暂停、滚动和导出。
 
 ## 2. 文件地图
@@ -26,7 +28,7 @@ https://compass.jinritemai.com/screen/anchor/talent...
 | `src/styles.css` | 内容脚本页面的基础样式隔离 | 浏览器验证 |
 | `demo/demo.html` | 离线模拟器结构 | `npm run test:browser` |
 | `demo/demo.js` | 模拟事件、滚动、清空和每秒刷新 | 浏览器验证 |
-| `scripts/check.cjs` | manifest、权限、页面范围和语法检查 | `npm run check` |
+| `scripts/check.cjs` | manifest、权限、内容脚本范围、资源匹配和语法检查 | `npm run check` |
 | `scripts/package.cjs` | 将扩展文件复制到 `dist/` | `npm run package` |
 | `scripts/sync.cjs` | 递增版本、验证、提交和网络同步 | `npm run sync` |
 | `tests/*.test.cjs` | 核心、DOM 和存储回归测试 | `npm test` |
@@ -265,23 +267,24 @@ npm test
 npm run check
 ```
 
-检查 MV3、权限只有 `storage`、页面匹配规则、清单引用文件和所有 `src/*.js` 语法。
+检查 MV3、权限只有 `storage`、内容脚本的主播页面匹配规则、SVG 资源的本站 `/*` 匹配规则、清单引用文件和所有 `src/*.js` 语法。内容脚本与资源匹配规则须分别校验。
 
-### 浏览器模拟
+### 真实扩展加载与离线模拟
 
 ```sh
 npm run test:browser
 ```
 
-使用 Playwright 打开 `demo/demo.html`，添加事件并截图到 `test-results/demo.png`。需要人工查看时，重点确认浮层能看到：人流速、上一分钟比较、最近进入、窗口进入、去重观众、暂停/重置/导出按钮和两个选择器。无新进入时等待几秒，应看到“最近进入 N 秒前”变化。
+首先使用 Playwright 启动独立 Chrome，实际加载根目录扩展并确认成功；Chrome 对清单的报错必须使验证失败。然后打开 `demo/demo.html`，添加合成事件、验证刷新恢复，并截图到 `test-results/demo.png`。需要人工查看时，重点确认浮层能看到：人流速、上一分钟比较、最近进入、窗口进入、去重观众、暂停/重置/导出按钮和两个选择器。无新进入时等待几秒，应看到“最近进入 N 秒前”变化。
 
 ### 打包
 
 ```sh
 npm run package
+npm run test:browser -- dist
 ```
 
-把 `manifest.json`、`src/`、`assets/` 复制到被 `.gitignore` 忽略的 `dist/`。加载 Chrome 扩展时选择项目根目录或 `dist/` 均可；发布前优先检查 `dist/manifest.json` 版本。
+把 `manifest.json`、`src/`、`assets/` 复制到被 `.gitignore` 忽略的 `dist/`。交付原文件目录 `/Users/tangsir/千川流速/dist`；Chrome 的“加载已解压的扩展程序”选择此目录。手动打包后检查 `dist/manifest.json` 版本，并执行 `npm run test:browser -- dist`，在独立 Chrome 实际加载 `dist/`，确认生成目录也通过清单校验。
 
 ## 9. 版本和 Git 流程
 
@@ -307,7 +310,7 @@ npm run sync -- minor
 npm run sync -- major
 ```
 
-`sync.cjs` 在发现工作区有改动时才递增版本；没有改动时不制造空版本，只尝试推送已有本地提交。它先验证再 `git add -A`、提交 `chore(release): vX.Y.Z`，最后执行 `git push -u origin main`。推送失败不会回滚提交。
+`sync.cjs` 在发现工作区有改动时才递增版本；没有改动时不制造空版本，只尝试推送已有本地提交。它依次执行 `npm test`、`npm run check`、`npm run package`、`npm run test:browser -- dist`，自动在提交前验证生成目录，再 `git add -A`、提交 `chore(release): vX.Y.Z`，最后执行 `git push -u origin main`。推送失败不会回滚提交。
 
 ## 10. 隐私、安全和权限
 
