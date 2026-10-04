@@ -173,7 +173,29 @@ type Config = {
 
 配置存储于 `chrome.storage.local['qianchuanConfig']`。配置不是会话数据，重置本场不会清除配置。
 
-## 8. 兼容策略
+## 8. 刷新恢复存储
+
+直播内容脚本使用页面 `sessionStorage` 保存当前房间的活动会话引用：
+
+```text
+qianchuan-flow-session:<roomId> -> session.id
+```
+
+该引用不是事件数据，也不是跨房间共享的 id。启动时只有在 `readSession(session.id)` 返回同一 `roomId` 且 `endedAt` 为空时才恢复；否则删除引用并创建新会话。重置会结束旧会话并清理引用。
+
+离线 demo 使用 `localStorage['qianchuan-flow-demo-state']` 保存合成数据：
+
+```json
+{
+  "startedAt": 1700000000000,
+  "events": [],
+  "paused": false
+}
+```
+
+这些浏览器本地状态不应提交到 Git。`FlowCounter.load(events)` 只接受带有限数值 `timestamp` 和非空字符串 `username` 的记录，忽略格式错误的持久化项。
+
+## 9. 兼容策略
 
 - 新增字段应提供默认值或允许缺失。
 - 不要把 DOM 节点、`Set`、`Map` 或 `Error` 直接写进 IndexedDB/JSON。

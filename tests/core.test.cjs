@@ -61,6 +61,14 @@ test('records entry events and computes rolling unique counts and rate', () => {
   assert.equal(counter.stats(91_000, 60, 60).events, 0);
 });
 
+test('loads persisted events and ignores malformed records', () => {
+  const counter = new FlowCounter({ startedAt: 0 });
+  const loaded = counter.load([{ id: 'saved-1', timestamp: 10_000, username: ' Alice ' }, { timestamp: 'bad', username: 'Nope' }, null]);
+  assert.equal(loaded.length, 1);
+  assert.equal(counter.stats(20_000, 60, 60).events, 1);
+  assert.equal(counter.activity(20_000).lastEventAt, 10_000);
+});
+
 test('excludes paused time from elapsed seconds and rate', () => {
   const counter = new FlowCounter({ startedAt: 0 });
   counter.add(['Alice'], 10_000);

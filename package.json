@@ -1,6 +1,6 @@
 {
   "name": "qianchuan-flow",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Local viewer arrival flow monitor for the rendered live screen",
   "scripts": {

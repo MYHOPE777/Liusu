@@ -57,6 +57,14 @@ locate() -> sample() -> render()
 
 所以没有新进入事件时，面板仍然会刷新“最近进入”的空闲秒数、趋势采样和滚动窗口结果。窗口中最后一批事件仍在有效期内时，人流速数值可能保持不变；事件离开窗口后人流速变为 `0.0`，这符合严格滚动窗口定义。
 
+### 3.1 刷新恢复
+
+直播页面会把当前房间的活动会话 id 写入 `sessionStorage`，键名为 `qianchuan-flow-session:<roomId>`。页面刷新后先读取该 id，再通过 `QianchuanStore.readSession()` 恢复未结束的会话和事件；房间不一致、会话已结束或引用失效时会清理引用并创建新会话。恢复时使用会话原始 `startedAt`，所以本场有效时长、滚动窗口和“最近进入”不会因为刷新归零。
+
+点击“重置本场”会结束旧会话、删除当前页面的会话引用并创建新会话。`sessionStorage` 只保存引用，真实事件仍保存在扩展后台的 IndexedDB 中。
+
+离线 `demo/demo.html` 没有扩展后台，因此使用 `localStorage['qianchuan-flow-demo-state']` 保存开始时间、事件数组和暂停状态。刷新会恢复事件及可见模拟公屏，重置会删除这份本地状态。若 `file:` 环境禁止本地存储，demo 会降级为当前页面内存模式。
+
 ## 4. DOM 输入契约
 
 ### 4.1 定位面板
@@ -198,7 +206,7 @@ events:   keyPath=id，index sessionId
 }
 ```
 
-`appendEvents` 按 session 串行排队，并按稳定事件 id 去重；重复提交不会增加 `eventCount`。IndexedDB 不可用时仓库退回内存模式，扩展提示本地存储不可用，但统计仍可运行。
+`appendEvents` 按 session 串行排队，并按稳定事件 id 去重；重复提交不会增加 `eventCount`。IndexedDB 不可用时仓库退回内存模式，扩展提示本地存储不可用，但统计仍可运行。内容脚本刷新恢复依赖 `sessionStorage` 保存的会话 id；事件本体和导出数据仍以 IndexedDB 为准。
 
 ### 6.2 chrome.storage.local 配置
 

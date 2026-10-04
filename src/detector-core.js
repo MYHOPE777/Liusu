@@ -80,6 +80,14 @@
       this.pauses = [];
     }
 
+    load(events = []) {
+      this.events = Array.isArray(events)
+        ? events.filter((event) => event && typeof event.timestamp === 'number' && Number.isFinite(event.timestamp) && typeof event.username === 'string' && event.username.trim())
+          .map((event) => ({ ...event, username: event.username.trim() }))
+        : [];
+      return this.events;
+    }
+
     get paused() {
       return this.pausedAt !== null;
     }

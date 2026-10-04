@@ -15,6 +15,7 @@
 - 远程仓库目标：`https://github.com/MYHOPE777/Liusu.git`，远程名约定为 `origin`。
 - 当前仓库在本地还没有首个提交时，先将全部源代码、文档、测试和模拟数据作为首个版本提交。
 - 真实直播 DOM 尚未在开播状态下验证；DOM 变化时优先修改 `src/dom-detector.js`，不要绕过 DOM 去调用接口。
+- 直播刷新恢复已实现：当前房间的活动 session id 放在 `sessionStorage`，事件从 IndexedDB 读回；离线 demo 使用 `localStorage` 保留模拟事件和公屏。`FlowCounter.load()` 会过滤无效持久化记录。
 
 ## 接手后的第一步
 
@@ -51,7 +52,8 @@ npm run sync
 - DOM 定位、可见性、MutationObserver、行复用：修改 `src/dom-detector.js`，同时补 `tests/dom.test.cjs`。
 - IndexedDB、配置、会话、事件去重：修改 `src/background.js`，同时补 `tests/storage.test.cjs`。
 - 直播页组装、定时刷新、暂停和导出调用：修改 `src/content.js`。
+- 刷新恢复或会话生命周期：同时检查 `src/content.js` 的 sessionStorage 引用、`src/detector-core.js` 的 `FlowCounter.load()` 和 `src/background.js` 的 `readSession()`。
 - 浮层结构和显示文案：修改 `src/panel.js`；浏览器验证看 `test-results/demo.png`。
-- 离线交互：修改 `demo/demo.html`、`demo/demo.js`、`demo/demo.css`，不把 demo 文件加入扩展 manifest。
+- 离线交互：修改 `demo/demo.html`、`demo/demo.js`、`demo/demo.css`。demo 的本地状态键为 `qianchuan-flow-demo-state`，重置必须同时清空事件和该键，不把 demo 文件加入扩展 manifest。
 
 修改后必须执行测试，再用 `npm run sync` 保存版本。完整接口、字段和样例见 `docs/DEVELOPMENT.md` 与 `docs/DATA_CONTRACT.md`。
