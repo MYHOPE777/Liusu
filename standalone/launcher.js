@@ -44,6 +44,13 @@
     const status = document.querySelector('[data-live-url-status]');
     const link = document.querySelector('[data-live-url-open]');
     const tools = document.querySelector('[data-live-url-tools]');
+    const bookmarklets = [...document.querySelectorAll('[data-bookmarklet-link]')];
+    for (const bookmarklet of bookmarklets) {
+      if (typeof root.QIANCHUAN_BOOKMARKLET === 'string' && root.QIANCHUAN_BOOKMARKLET.startsWith('javascript:')) {
+        bookmarklet.href = root.QIANCHUAN_BOOKMARKLET;
+        bookmarklet.hidden = false;
+      }
+    }
     if (!form || !input || !status || !link) return () => {};
 
     const last = readLastUrl(root.localStorage);

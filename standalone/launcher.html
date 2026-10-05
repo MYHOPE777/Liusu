@@ -28,6 +28,10 @@
     .tools li + li { margin-top: 5px; }
     .tool-links { display: flex; flex-wrap: wrap; gap: 8px; }
     .tool-links a { display: inline-block; }
+    .install { margin-top: 24px; padding: 18px; background: #f3f8f8; border: 1px solid #d7e8e5; border-radius: 6px; }
+    .install h2 { margin: 0 0 6px; font-size: 16px; }
+    .install p { margin-bottom: 12px; font-size: 13px; }
+    .bookmarklet-link { display: inline-block; font-weight: 700; }
     code { color: #334e55; }
     @media (max-width: 560px) { main { padding: 20px; } .input-row { display: grid; } button { width: 100%; } }
   </style>
@@ -36,6 +40,11 @@
   <main>
     <h1>定位千川主播大屏</h1>
     <p>粘贴已登录账号可访问的主播大屏 URL，打开对应直播间。</p>
+    <section class="install">
+      <h2>首次使用：安装启动按钮</h2>
+      <p>把下面的按钮拖到 Chrome 书签栏，只需设置一次。以后进入直播间后点这个书签即可启动。</p>
+      <a class="bookmarklet-link" data-bookmarklet-link draggable="true" hidden>千川流速启动</a>
+    </section>
     <form data-live-url-form>
       <label for="live-url">主播大屏 URL</label>
       <div class="input-row">
@@ -49,16 +58,15 @@
       <h2>下一步启动悬浮统计</h2>
       <ol>
         <li>切换到刚打开的直播间标签页。</li>
-        <li>按 <code>Option + Command + I</code>，进入 <strong>Sources → Snippets</strong>。</li>
-        <li>点击下方“打开悬浮脚本文件”，全选复制到新建的 Snippet，按 <code>Command + Enter</code> 运行。</li>
+        <li>点击书签栏里的“千川流速启动”。</li>
       </ol>
       <div class="tool-links">
-        <a href="overlay-runner.js" target="_blank" rel="noopener noreferrer">打开悬浮脚本文件</a>
-        <a href="bookmarklet.txt" target="_blank" rel="noopener noreferrer">打开 bookmarklet 文件</a>
+        <a class="bookmarklet-link" data-bookmarklet-link draggable="true" hidden>千川流速启动</a>
       </div>
-      <p>运行成功后，直播间右上角会出现“千川流速 · 独立悬浮”。Chrome 如果阻止粘贴，先在 Console 手动输入 <code>allow pasting</code>。</p>
+      <p>运行成功后，直播间右上角会出现“千川流速 · 独立悬浮”。</p>
     </section>
   </main>
+  <script src="bookmarklet-link.js"></script>
   <script src="launcher.js"></script>
 </body>
 </html>

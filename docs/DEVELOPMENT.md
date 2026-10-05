@@ -29,7 +29,7 @@ https://compass.jinritemai.com/screen/anchor/talent...
 | `src/route-bootstrap.js` | 登录页到主播大屏的路由切换刷新 | `tests/navigation.test.cjs` |
 | `standalone/overlay-runner.js` | 不依赖扩展 API 的页面悬浮统计脚本 | `tests/standalone.test.cjs` |
 | `standalone/bookmarklet.txt` | 可保存为书签的独立脚本 | `tests/standalone.test.cjs` |
-| `standalone/launcher.html` / `launcher.js` | 校验 URL 并打开指定主播大屏房间 | `tests/launcher.test.cjs` |
+| `standalone/launcher.html` / `launcher.js` | 校验 URL、打开指定房间并提供一键 bookmarklet 入口 | `tests/launcher.test.cjs` |
 | `src/panel.js` | Shadow DOM 浮层、控件、数据显示 | `npm run test:browser` 截图 |
 | `src/styles.css` | 内容脚本页面的基础样式隔离 | 浏览器验证 |
 | `demo/demo.html` | 离线模拟器结构 | `npm run test:browser` |

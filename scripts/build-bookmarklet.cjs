@@ -4,4 +4,5 @@ const root = path.resolve(__dirname, '..');
 const runner = fs.readFileSync(path.join(root, 'standalone', 'overlay-runner.js'), 'utf8').trim();
 const code = `javascript:(()=>{${runner.replace(/<\//g, '<\\/')}})()`;
 fs.writeFileSync(path.join(root, 'standalone', 'bookmarklet.txt'), code + '\n');
-console.log('Standalone bookmarklet generated.');
+fs.writeFileSync(path.join(root, 'standalone', 'bookmarklet-link.js'), `window.QIANCHUAN_BOOKMARKLET = ${JSON.stringify(code)};\n`);
+console.log('Standalone bookmarklet and launcher link generated.');
