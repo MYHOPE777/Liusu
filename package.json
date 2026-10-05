@@ -1,6 +1,6 @@
 {
   "name": "qianchuan-flow",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "description": "Local viewer arrival flow monitor for the rendered live screen",
   "scripts": {
@@ -9,6 +9,7 @@
     "assets": "node scripts/assets.cjs",
     "test:browser": "node scripts/browser-test.cjs",
     "package": "node scripts/package.cjs",
+    "bookmarklet": "node scripts/build-bookmarklet.cjs",
     "sync": "node scripts/sync.cjs"
   },
   "devDependencies": {

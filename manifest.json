@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "千川流速",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "在主播实时大屏中统计新进入直播间的人流速。",
   "permissions": [
     "storage"

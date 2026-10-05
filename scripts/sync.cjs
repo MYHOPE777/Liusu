@@ -62,6 +62,7 @@ const manifest = readJson(manifestPath);
 manifest.version = version;
 writeJson(manifestPath, manifest);
 
+run('npm', ['run', 'bookmarklet']);
 run('npm', ['test']);
 run('npm', ['run', 'check']);
 run('npm', ['run', 'package']);

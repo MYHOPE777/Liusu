@@ -27,6 +27,8 @@ https://compass.jinritemai.com/screen/anchor/talent...
 | `src/storage.js` | 内容脚本到 background 的 Promise API | 由浏览器流程间接验证 |
 | `src/content.js` | 直播页状态机、事件保存、每秒刷新、暂停和导出 | 浏览器手工/模拟验证 |
 | `src/route-bootstrap.js` | 登录页到主播大屏的路由切换刷新 | `tests/navigation.test.cjs` |
+| `standalone/overlay-runner.js` | 不依赖扩展 API 的页面悬浮统计脚本 | `tests/standalone.test.cjs` |
+| `standalone/bookmarklet.txt` | 可保存为书签的独立脚本 | `tests/standalone.test.cjs` |
 | `src/panel.js` | Shadow DOM 浮层、控件、数据显示 | `npm run test:browser` 截图 |
 | `src/styles.css` | 内容脚本页面的基础样式隔离 | 浏览器验证 |
 | `demo/demo.html` | 离线模拟器结构 | `npm run test:browser` |

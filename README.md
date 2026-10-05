@@ -29,6 +29,10 @@
 
 直播未开播时可直接打开 [demo/demo.html](/Users/tangsir/千川流速/demo/demo.html)。页面提供模拟公屏和“添加‘来了’”“连续进入 5 人”“模拟列表滚动”等操作，覆盖同名重复、列表滚动和空屏场景。模拟数据只保留在当前页面内。
 
+## 不安装扩展的悬浮脚本
+
+如果不使用 Chrome 扩展，可在已登录的主播大屏页面直接运行 `/Users/tangsir/千川流速/standalone/overlay-runner.js`：打开开发者工具（macOS：`Option+Command+I`），进入 `Sources` → `Snippets`，新建代码片段，粘贴该文件内容并按 `Command+Enter` 运行。右上角出现“千川流速 · 独立悬浮”即启动；脚本只读取当前页面已渲染的实时公屏，不使用扩展权限。也可以把 `standalone/bookmarklet.txt` 的整行内容保存为书签网址，打开直播页后点击书签启动。刷新页面后需再次运行脚本。
+
 ## 开发交接与数据文档
 
 - [AI 接手说明](AI_HANDOFF.md)：项目目标、当前状态、不可破坏的约束和修改顺序。
