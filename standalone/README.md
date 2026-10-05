@@ -4,7 +4,7 @@
 
 ## 先用 URL 定位直播间
 
-直接打开 `standalone/launcher.html`，粘贴完整的主播大屏 URL，点击“定位直播间”。启动页会校验域名、页面路径和 `live_room_id`，然后在浏览器新标签打开对应直播间；它不会尝试跨域读取直播页。
+直接打开 `standalone/launcher.html`，粘贴完整的主播大屏 URL，点击“定位直播间”。启动页会校验域名、页面路径和 `live_room_id`，然后在浏览器新标签打开对应直播间；它不会尝试跨域读取直播页。定位成功后，启动页会直接提供 `overlay-runner.js` 和 `bookmarklet.txt` 的打开入口，不需要再到项目文件夹里查找。
 
 ## 使用方式：Chrome DevTools Snippet
 

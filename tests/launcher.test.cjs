@@ -18,7 +18,7 @@ test('launcher rejects login, other hosts, and URLs without a room id', () => {
 });
 
 test('launcher validates the pasted URL and exposes a room link', () => {
-  const dom = new JSDOM('<form data-live-url-form><input data-live-url-input><div data-live-url-status></div><a data-live-url-open hidden></a></form>', {
+  const dom = new JSDOM('<form data-live-url-form><input data-live-url-input><div data-live-url-status></div><a data-live-url-open hidden></a><section data-live-url-tools hidden></section></form>', {
     url: 'https://local.test/launcher.html'
   });
   const input = dom.window.document.querySelector('[data-live-url-input]');
@@ -28,6 +28,7 @@ test('launcher validates the pasted URL and exposes a room link', () => {
   form.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
   assert.equal(dom.window.document.querySelector('[data-live-url-status]').textContent, '已定位直播间：room-42');
   assert.equal(dom.window.document.querySelector('[data-live-url-open]').href, input.value);
+  assert.equal(dom.window.document.querySelector('[data-live-url-tools]').hidden, false);
   stop();
   dom.window.close();
 });

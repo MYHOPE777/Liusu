@@ -43,6 +43,7 @@
     const input = document.querySelector('[data-live-url-input]');
     const status = document.querySelector('[data-live-url-status]');
     const link = document.querySelector('[data-live-url-open]');
+    const tools = document.querySelector('[data-live-url-tools]');
     if (!form || !input || !status || !link) return () => {};
 
     const last = readLastUrl(root.localStorage);
@@ -52,6 +53,7 @@
       status.textContent = result.ok ? `已定位直播间：${result.roomId}` : result.error;
       status.dataset.state = result.ok ? 'success' : 'error';
       link.hidden = !result.ok;
+      if (tools) tools.hidden = !result.ok;
       if (result.ok) {
         link.href = result.href;
         link.textContent = `打开直播间 ${result.roomId}`;
@@ -73,6 +75,7 @@
       if (status.dataset.state) status.textContent = '';
       status.dataset.state = '';
       link.hidden = true;
+      if (tools) tools.hidden = true;
     });
     if (last) report(parseLiveUrl(last));
     return () => form.removeEventListener('submit', locate);

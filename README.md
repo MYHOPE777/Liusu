@@ -33,7 +33,7 @@
 
 如果不使用 Chrome 扩展，可在已登录的主播大屏页面直接运行 `/Users/tangsir/千川流速/standalone/overlay-runner.js`：打开开发者工具（macOS：`Option+Command+I`），进入 `Sources` → `Snippets`，新建代码片段，粘贴该文件内容并按 `Command+Enter` 运行。右上角出现“千川流速 · 独立悬浮”即启动；脚本只读取当前页面已渲染的实时公屏，不使用扩展权限。也可以把 `standalone/bookmarklet.txt` 的整行内容保存为书签网址，打开直播页后点击书签启动。刷新页面后需再次运行脚本。
 
-如果希望先输入 URL 再定位直播间，直接打开 `/Users/tangsir/千川流速/standalone/launcher.html`，粘贴主播大屏地址并点击“定位直播间”。启动页只负责在浏览器新标签打开正确房间，不能跨域读取直播页；进入目标页后仍需运行独立悬浮脚本或 bookmarklet。
+如果希望先输入 URL 再定位直播间，直接打开 `/Users/tangsir/千川流速/standalone/launcher.html`，粘贴主播大屏地址并点击“定位直播间”。定位成功后启动页会直接给出 `overlay-runner.js` 和 `bookmarklet.txt` 的入口；启动页只负责在浏览器新标签打开正确房间，不能跨域读取直播页，进入目标页后需按页面提示运行独立悬浮脚本或 bookmarklet。
 
 ## 开发交接与数据文档
 

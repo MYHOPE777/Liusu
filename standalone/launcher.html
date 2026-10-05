@@ -20,8 +20,15 @@
     .status { min-height: 22px; margin-top: 12px; color: #b14c42; }
     .status[data-state="success"] { color: #247c6c; }
     .open-link { display: inline-block; margin-top: 4px; }
-    .steps { margin: 24px 0 0; padding-top: 18px; border-top: 1px solid #edf1f2; color: #63767d; font-size: 13px; }
-    .steps strong { color: #334e55; }
+    .tools { margin-top: 24px; padding-top: 18px; border-top: 1px solid #edf1f2; }
+    .tools[hidden] { display: none; }
+    .tools h2 { margin: 0 0 8px; font-size: 16px; }
+    .tools p, .tools li { color: #63767d; font-size: 13px; }
+    .tools ol { margin: 10px 0 16px; padding-left: 20px; }
+    .tools li + li { margin-top: 5px; }
+    .tool-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tool-links a { display: inline-block; }
+    code { color: #334e55; }
     @media (max-width: 560px) { main { padding: 20px; } .input-row { display: grid; } button { width: 100%; } }
   </style>
 </head>
@@ -38,7 +45,19 @@
       <div class="status" data-live-url-status role="status" aria-live="polite"></div>
       <a class="open-link" data-live-url-open hidden target="_blank" rel="noopener noreferrer"></a>
     </form>
-    <div class="steps"><strong>打开后：</strong>在目标页面运行 <code>standalone/overlay-runner.js</code>，或点击已保存的 bookmarklet，右上角即可显示流速。</div>
+    <section class="tools" data-live-url-tools hidden aria-live="polite">
+      <h2>下一步启动悬浮统计</h2>
+      <ol>
+        <li>切换到刚打开的直播间标签页。</li>
+        <li>按 <code>Option + Command + I</code>，进入 <strong>Sources → Snippets</strong>。</li>
+        <li>点击下方“打开悬浮脚本文件”，全选复制到新建的 Snippet，按 <code>Command + Enter</code> 运行。</li>
+      </ol>
+      <div class="tool-links">
+        <a href="overlay-runner.js" target="_blank" rel="noopener noreferrer">打开悬浮脚本文件</a>
+        <a href="bookmarklet.txt" target="_blank" rel="noopener noreferrer">打开 bookmarklet 文件</a>
+      </div>
+      <p>运行成功后，直播间右上角会出现“千川流速 · 独立悬浮”。Chrome 如果阻止粘贴，先在 Console 手动输入 <code>allow pasting</code>。</p>
+    </section>
   </main>
   <script src="launcher.js"></script>
 </body>
