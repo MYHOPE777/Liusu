@@ -17,6 +17,7 @@
 - Chrome 安装时选择 `npm run package` 生成的原文件目录 `/Users/tangsir/千川流速/dist`，不需要压缩包。内容脚本仍只匹配主播路径；`web_accessible_resources` 只暴露 SVG 图标，`matches` 必须写为 `https://compass.jinritemai.com/*`。该字段不能使用 `/screen/anchor/talent*`，否则 Chrome 会拒绝加载清单。
 - `src/route-bootstrap.js` 在 Compass 全站监听页面路由变化；它不读取公屏数据，只在登录页通过前端路由进入主播大屏时触发一次刷新，让主播路径内容脚本获得注入机会。Chrome 扩展详情中的网站访问必须允许 `compass.jinritemai.com`。
 - 不安装扩展的备用入口是 `standalone/overlay-runner.js`，在已登录页面的 DevTools Snippet 中直接运行；`standalone/bookmarklet.txt` 是同一脚本的书签格式。该入口使用页面本地存储，不调用 `chrome.runtime`。
+- `standalone/launcher.html` 是不安装扩展时的 URL 入口：它校验 `compass.jinritemai.com/screen/anchor/talent` 和 `live_room_id` 后在新标签打开房间。启动页不能跨域读取直播页，进入目标页后仍需运行独立悬浮脚本或 bookmarklet。
 - 已使用已登录的主播大屏页面验证真实结构：标题控制器为 `commentsManager`，消息面板常见 `commentsWrap--...` / `chatMessages--...` CSS Module 类名，单条消息常见 `levelMessage--...`。`src/dom-detector.js` 已跳过标题控制器并识别这些消息行；DOM 变化时继续优先修改该文件，不要绕过 DOM 去调用接口。
 - 直播刷新恢复已实现：当前房间的活动 session id 放在 `sessionStorage`，事件从 IndexedDB 读回；离线 demo 使用 `localStorage` 保留模拟事件和公屏。`FlowCounter.load()` 会过滤无效持久化记录。
 
