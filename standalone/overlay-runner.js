@@ -1,5 +1,10 @@
 (function () {
   'use strict';
+  const livePage = /^https:\/\/compass\.jinritemai\.com\/screen\/anchor\/talent(?:[/?#]|$)/u.test(String(location.href));
+  if (!livePage) {
+    try { window.alert('请切换到已登录的千川主播大屏标签页，再点击“千川流速启动”。'); } catch (_) {}
+    return;
+  }
   const KEY = '__QIANCHUAN_STANDALONE__';
   if (window[KEY]?.destroy) {
     window[KEY].destroy();

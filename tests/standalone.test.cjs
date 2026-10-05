@@ -18,6 +18,18 @@ test('standalone overlay starts without chrome extension APIs', () => {
   dom.window.close();
 });
 
+test('standalone overlay does not mount on the launcher or another page', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'standalone', 'overlay-runner.js'), 'utf8');
+  const dom = new JSDOM('<!doctype html><main></main>', {
+    url: 'file:///Users/tangsir/千川流速/standalone/launcher.html',
+    runScripts: 'dangerously'
+  });
+  dom.window.alert = () => {};
+  dom.window.eval(source);
+  assert.equal(dom.window.document.querySelector('#qianchuan-standalone'), null);
+  dom.window.close();
+});
+
 test('bookmarklet is generated as a javascript URL', () => {
   const bookmarklet = fs.readFileSync(path.join(__dirname, '..', 'standalone', 'bookmarklet.txt'), 'utf8').trim();
   assert.match(bookmarklet, /^javascript:\(\(\)=>\{/);

@@ -32,6 +32,8 @@ test('launcher validates the pasted URL and exposes a room link', () => {
   assert.equal(dom.window.document.querySelector('[data-live-url-status]').textContent, '已定位直播间：room-42');
   assert.equal(dom.window.document.querySelector('[data-live-url-open]').href, input.value);
   assert.equal(dom.window.document.querySelector('[data-live-url-tools]').hidden, false);
+  dom.window.document.querySelector('[data-bookmarklet-link]').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true, cancelable: true }));
+  assert.match(dom.window.document.querySelector('[data-live-url-status]').textContent, /拖到 Chrome 书签栏/);
   stop();
   dom.window.close();
 });

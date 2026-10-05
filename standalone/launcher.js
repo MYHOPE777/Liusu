@@ -50,6 +50,11 @@
         bookmarklet.href = root.QIANCHUAN_BOOKMARKLET;
         bookmarklet.hidden = false;
       }
+      bookmarklet.addEventListener('click', (event) => {
+        event.preventDefault();
+        status.textContent = '请把此按钮拖到 Chrome 书签栏，再到主播大屏标签页点击书签。';
+        status.dataset.state = 'error';
+      });
     }
     if (!form || !input || !status || !link) return () => {};
 
