@@ -12,6 +12,8 @@ https://compass.jinritemai.com/screen/anchor/talent...
 
 `web_accessible_resources` 仅暴露面板使用的 `assets/icons/*.svg`，其 `matches` 为 `https://compass.jinritemai.com/*`。Chrome 对该字段只按来源匹配，并要求路径必须是 `/*`；写成 `/screen/anchor/talent*` 会报 `Invalid match pattern` 并拒绝整个清单。内容脚本的主播路径匹配仍然保留。
 
+`src/route-bootstrap.js` 以 `https://compass.jinritemai.com/*` 注入，但只轮询 URL 变化，不读取页面内容；发现登录页通过前端路由进入主播大屏时刷新页面，随后由主播路径内容脚本启动。Chrome 扩展详情必须允许网站访问 `compass.jinritemai.com`。
+
 离线页面 `demo/demo.html` 只模拟 DOM，不访问扩展 API，方便直播未开播时测试检测、统计、暂停、滚动和导出。
 
 ## 2. 文件地图
@@ -24,6 +26,7 @@ https://compass.jinritemai.com/screen/anchor/talent...
 | `src/background.js` | IndexedDB 仓库、配置、Chrome runtime 消息处理 | `tests/storage.test.cjs` |
 | `src/storage.js` | 内容脚本到 background 的 Promise API | 由浏览器流程间接验证 |
 | `src/content.js` | 直播页状态机、事件保存、每秒刷新、暂停和导出 | 浏览器手工/模拟验证 |
+| `src/route-bootstrap.js` | 登录页到主播大屏的路由切换刷新 | `tests/navigation.test.cjs` |
 | `src/panel.js` | Shadow DOM 浮层、控件、数据显示 | `npm run test:browser` 截图 |
 | `src/styles.css` | 内容脚本页面的基础样式隔离 | 浏览器验证 |
 | `demo/demo.html` | 离线模拟器结构 | `npm run test:browser` |

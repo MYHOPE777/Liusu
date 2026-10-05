@@ -21,7 +21,9 @@
 3. 点击“加载已解压的扩展程序”，选择 `/Users/tangsir/千川流速/dist`，无需压缩包。
 4. 打开匹配的主播大屏地址：`https://compass.jinritemai.com/screen/anchor/talent...`。
 
-扩展当前只在该地址范围注入内容脚本。`web_accessible_resources` 只向 `compass.jinritemai.com` 页面暴露面板的 SVG 图标；Chrome 要求该字段的路径为 `/*`，因此使用 `https://compass.jinritemai.com/*`。内容脚本仍使用主播路径匹配。真实直播页的 DOM 行结构如果发生变化，只需要调整 `src/dom-detector.js`，统计和本地存储接口不变。
+如果千川标签页在加载扩展前就已经打开，先在扩展卡片点击“重新加载”，再回到直播页执行硬刷新（macOS：`Cmd+Shift+R`）。在扩展详情中将“网站访问”设为允许访问 `compass.jinritemai.com`，否则 Chrome 会阻止内容脚本注入。扩展包含一个只负责监听页面路由变化的启动脚本，登录页在同一标签页切换到主播大屏时会自动刷新一次，随后加载统计面板。
+
+扩展只在主播大屏页面运行统计内容脚本。`web_accessible_resources` 只向 `compass.jinritemai.com` 页面暴露面板的 SVG 图标；Chrome 要求该字段的路径为 `/*`，因此使用 `https://compass.jinritemai.com/*`。真实直播页的 DOM 行结构如果发生变化，只需要调整 `src/dom-detector.js`，统计和本地存储接口不变。
 
 ## 离线模拟
 
@@ -46,6 +48,8 @@ npm run test:browser -- dist
 ```
 
 `npm run test:browser` 先让独立 Chrome 加载项目根目录的真实扩展，确认加载成功，再测试离线 demo。`npm run package` 将扩展原文件复制到 `dist/`；手动打包后执行 `npm run test:browser -- dist` 验证生成目录也能加载。`demo/` 是离线验收页面，不会被复制到扩展目录。
+
+若面板仍未出现，依次检查：扩展是否为“已启用”、网站访问是否允许 `compass.jinritemai.com`、扩展是否重新加载、主播大屏是否硬刷新，以及地址是否仍为 `/screen/anchor/talent?...`。面板出现但状态为“未找到实时公屏”时，再检查页面是否已经渲染“实时公屏”区域。
 
 ## 版本与仓库同步
 
